@@ -1,30 +1,55 @@
 {
-  "expo": {
-    "name": "WorkoutTracker",
-    "slug": "WorkoutTracker",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
-  }
+	"expo": {
+		"name": "Gainz",
+		"slug": "Gainz",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"icon": "./src/assets/icon.png",
+		"userInterfaceStyle": "dark",
+		"scheme": "your-app-scheme",
+		"splash": {
+			"image": "./src/assets/splash.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#ffffff"
+		},
+		"assetBundlePatterns": ["**/*"],
+		"ios": {
+			"supportsTablet": true,
+			"usesAppleSignIn": true,
+			"usesIcloudStorage": true,
+			"bundleIdentifier": "nl.mingull.Gainz"
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./src/assets/adaptive-icon.png",
+				"backgroundColor": "#ffffff"
+			},
+			"package": "nl.mingull.Gainz"
+		},
+		"androidStatusBar": {
+			"translucent": false
+		},
+		"web": {
+			"favicon": "./src/assets/favicon.png",
+			"bundler": "metro"
+		},
+		"plugins": [
+			"expo-router",
+			"expo-apple-authentication",
+			[
+				"expo-document-picker",
+				{
+					"iCloudContainerEnvironment": "Production"
+				}
+			],
+			[
+				"expo-image-picker",
+				{
+					"photosPermission": "Allow $(PRODUCT_NAME) to access your photos",
+					"cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+					"microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone"
+				}
+			]
+		]
+	}
 }
