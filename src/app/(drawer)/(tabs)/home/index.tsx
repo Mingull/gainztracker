@@ -4,7 +4,8 @@ import { supabase } from "@/lib/db/supabase";
 import { Exercise, Set, Workout } from "@/lib/types/Workout";
 import { prettyPrint } from "@/lib/utils";
 import React, { useEffect } from "react"; // Import React
-import { FlatList, View } from "react-native";
+import { ScrollView, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomePage() {
@@ -36,14 +37,36 @@ export default function HomePage() {
 
 	return (
 		<SafeAreaView className="items-center justify-center flex-1 pb-20 bg-zinc-200">
-			<FlatList
-				data={workouts}
-				renderItem={({ index, item, separators }) => {
-					return <Text>{item.name}</Text>;
-				}}
-				keyExtractor={(item) => item.id.toString()}
-				horizontal={true}
-			/>
+			{workouts ? (
+				<FlatList
+					data={workouts}
+					renderItem={({ index, item, separators }) => {
+						return (
+							<View style={{ gap: 20 }}>
+								<View className="bg-blue-500 p-4">
+									<Text>{item.name}</Text>
+									<FlatList
+										data={item.exercises}
+										renderItem={({ item }) => {
+											return (
+												<View style={{ gap: 20 }}>
+													<View className="bg-blue-500 py-4">
+														<Text>{item.name}</Text>
+													</View>
+												</View>
+											);
+										}}
+										horizontal={true}
+									/>
+								</View>
+							</View>
+						);
+					}}
+					keyExtractor={(item) => item.id.toString()}
+				/>
+			) : (
+				<Text>No workouts</Text>
+			)}
 		</SafeAreaView>
 	);
 }
