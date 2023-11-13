@@ -1,12 +1,12 @@
 import { AddButton, PopupButton } from "@/components/addButton";
-import { SCREEN_WIDTH, isSmallDevice } from "@/constants/screen";
+import { isSmallDevice } from "@/constants/screen";
 import cn from "@/lib/utils/ClassName";
 import { Tabs, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Dumbbell, Home, LucideIcon, Plus, Trophy, Users, Weight } from "lucide-react-native";
+import { Dumbbell, Home, LucideIcon, Trophy, Users } from "lucide-react-native";
 import { StyledComponent } from "nativewind";
 import React from "react";
-import { Pressable, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Animated, {
 	SharedValue,
 	interpolate,

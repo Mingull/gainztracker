@@ -25,7 +25,7 @@ const [Provider, useUser] = createSafeContext<UserCtx>("useUser() must be used w
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
 	const [session, setSession] = useState<Session | null>(null);
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState<boolean>(false);
 	const [userId, setUserId] = useState<string | null>(null);
 	const [username, setUsername] = useState<string | null>(null);
 	const [firstName, setFirstName] = useState<string | null>(null);
