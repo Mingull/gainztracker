@@ -43,14 +43,14 @@ export default function HomePage() {
 					renderItem={({ index, item, separators }) => {
 						return (
 							<View style={{ gap: 20 }}>
-								<View className="bg-blue-500 p-4">
+								<View className="p-4 bg-blue-500">
 									<Text>{item.name}</Text>
 									<FlatList
 										data={item.exercises}
 										renderItem={({ item }) => {
 											return (
 												<View style={{ gap: 20 }}>
-													<View className="bg-blue-500 py-4">
+													<View className="py-4 bg-blue-500">
 														<Text>{item.name}</Text>
 													</View>
 												</View>

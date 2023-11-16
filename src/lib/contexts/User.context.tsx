@@ -96,6 +96,8 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 			if (error) {
 				throw error;
 			}
+
+			getProfile();
 		} catch (error) {
 			if (error instanceof Error) {
 				modal.error(error.message);

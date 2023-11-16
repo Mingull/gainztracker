@@ -1,5 +1,7 @@
+import Navbar from "@/components/Navbar";
 import { AddButton, PopupButton } from "@/components/addButton";
 import { isSmallDevice } from "@/constants/screen";
+import { shadows } from "@/constants/shadows";
 import cn from "@/lib/utils/ClassName";
 import { Tabs, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -45,6 +47,7 @@ export default function TabsLayout() {
 	return (
 		<>
 			<StatusBar style={"inverted"} />
+			<Navbar />
 			<Tabs
 				screenOptions={{
 					headerShown: false,
@@ -54,7 +57,7 @@ export default function TabsLayout() {
 						height: 70,
 						backgroundColor: "#fff",
 						paddingHorizontal: isSmallDevice() ? 0 : 100,
-						...styles.shadow,
+						...shadows.default,
 					},
 				}}
 				screenListeners={{
@@ -309,15 +312,3 @@ const Indicator = ({ currentTabIndex, index }: { index: number; currentTabIndex:
 		></Animated.View>
 	);
 };
-const styles = StyleSheet.create({
-	shadow: {
-		shadowColor: "#000",
-		shadowOffset: {
-			width: 0,
-			height: 10,
-		},
-		shadowOpacity: 0.25,
-		shadowRadius: 3.5,
-		elevation: 5,
-	},
-});

@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function AddWorkout() {
 	const { user, loading, update } = useUser();
 
-	if (!loading) console.log(JSON.stringify(user, null, 4));
+	// if (!loading) console.log(JSON.stringify(user, null, 4));
 
 	return (
 		<SafeAreaView className="items-center justify-center flex-1 pb-20 bg-zinc-200">

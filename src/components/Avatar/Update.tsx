@@ -1,10 +1,7 @@
 import { supabase } from "@/lib/db/supabase";
-import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
-import { Pressable, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import modal from "../Modalify";
-import Text from "../Text";
+import { Pressable } from "react-native";
 import Avatar, { AvatarProps } from "./Avatar";
 
 export interface UpdateProps extends AvatarProps {
@@ -19,7 +16,6 @@ export default function Update({ width = 150, height = 150, url, onUpload }: Upd
 		try {
 			setUploading(true);
 
-			// const { assets: file, canceled } = await DocumentPicker.getDocumentAsync({ type: "image/*" });
 			const { assets: file, canceled } = await ImagePicker.launchImageLibraryAsync({
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
@@ -31,36 +27,27 @@ export default function Update({ width = 150, height = 150, url, onUpload }: Upd
 			if (canceled) throw new Error("Cancelled");
 
 			console.log(JSON.stringify(file, null, 4));
-			// const photo = {
-			// 	uri: file?.[0].uri,
-			// 	type: file?.[0].mimeType,
-			// 	name: file?.[0].name,
-			// };
+
 			const photo = {
 				uri: file[0].uri,
-				type: file[0].type!,
+				type: file[0].type! + "/" + file[0].uri.split(".").pop(),
 				name: file[0].uri.substring(file[0].uri.lastIndexOf("/") + 1, file[0].uri.length),
 			};
 
 			const formData = new FormData();
-			formData.append("file", photo as unknown as Blob);
 
-			// const fileExt = file[0].name.split(".").pop();
-			const fileExt = file[0].uri.split(".").pop();
-			const filePath = `${Math.random()}.${fileExt}`;
+			formData.append("file", photo as unknown as Blob, photo.name);
 
-			console.log("photo", photo);
-			console.log("formData", formData.getAll("file")[0]);
-			console.log("filePath", filePath);
+			console.log("photoBlob", photo);
+			console.log("formData", JSON.stringify(formData, null, 4));
 
-			return;
-			const { error } = await supabase.storage.from("avatars").upload(filePath, formData);
+			const { error } = await supabase.storage.from("avatars").upload(photo.name, formData);
 
 			if (error) {
 				throw error;
 			}
 
-			onUpload(filePath);
+			onUpload(photo.name);
 		} catch (error) {
 			console.log(error);
 			// if (error instanceof DocumentPickerCanceledResult) {
