@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import { AddButton, PopupButton } from "@/components/addButton";
 import { isSmallDevice } from "@/constants/screen";
 import { shadows } from "@/constants/shadows";
+import { useUser } from "@/lib/contexts/User.context";
 import cn from "@/lib/utils/ClassName";
 import { Tabs, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -20,8 +21,8 @@ import Animated, {
 } from "react-native-reanimated";
 
 export default function TabsLayout() {
+	const { user, loading } = useUser();
 	const currentTabIndex = useSharedValue(0);
-	const ref = useSharedValue(0);
 	const addButtonShown = useSharedValue(false);
 
 	const pupupItems: PopupButton[] = [
@@ -46,8 +47,7 @@ export default function TabsLayout() {
 
 	return (
 		<>
-			<StatusBar style={"inverted"} />
-			<Navbar />
+			<Navbar user={user} loading={loading} />
 			<Tabs
 				screenOptions={{
 					headerShown: false,

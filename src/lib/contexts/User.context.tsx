@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../db/supabase";
 import { createSafeContext } from "../utils";
 
-interface UserCtx {
+export interface UserCtx {
 	user: UserInfo;
 	loading: boolean;
 	update: (user: UserInfo) => {};
