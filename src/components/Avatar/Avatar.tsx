@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/db/supabase";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Image, StyleProp, ViewStyle, ImageStyle } from "react-native";
+import { Skeleton } from "../Skeleton";
 
 export interface AvatarProps {
 	url: string | null;
@@ -11,12 +12,14 @@ export interface AvatarProps {
 
 export default function Avatar({ height = 150, width = 150, url, style }: AvatarProps) {
 	const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+	const [loading, setLoading] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (url) downloadImage(url);
 	}, [url]);
 
 	async function downloadImage(path: string) {
+		setLoading(true);
 		try {
 			const { data, error } = await supabase.storage.from("avatars").download(path);
 
@@ -33,19 +36,22 @@ export default function Avatar({ height = 150, width = 150, url, style }: Avatar
 			if (error instanceof Error) {
 				console.log("Error downloading image: ", error.message);
 			}
+		} finally {
+			setLoading(false);
 		}
 	}
 
 	return (
 		<>
-			{avatarUrl ? (
+			{avatarUrl && !loading ? (
 				<Image
 					source={{ uri: avatarUrl }}
 					accessibilityLabel="Avatar"
 					style={[{ height, width }, styles.avatar, styles.image, style as StyleProp<ImageStyle>]}
 				/>
 			) : (
-				<View style={[{ height, width }, styles.avatar, styles.noImage, style]} />
+				<Skeleton width={width} height={height} circle />
+				// <View style={[{ height, width }, styles.avatar, styles.noImage, style]} />
 			)}
 		</>
 	);

@@ -1,12 +1,17 @@
-import { Provider } from "@supabase/supabase-js";
-import { Link } from "expo-router";
-import React, { useState } from "react";
-import { Alert, Linking, ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, Input, SocialButton, Text } from "@/components";
+import modal from "@/components/Modalify";
 import { supabase } from "@/lib/db/supabase";
-import * as Yup from "yup";
+import { Provider } from "@supabase/supabase-js";
+import { makeRedirectUri } from "expo-auth-session";
+import * as QueryParams from "expo-auth-session/build/QueryParams";
+import * as Linking from "expo-linking";
+import { Link } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import { Formik } from "formik";
+import React from "react";
+import { Alert, ScrollView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import * as Yup from "yup";
 
 const validSchema = Yup.object()
 	.shape({
@@ -18,24 +23,56 @@ const validSchema = Yup.object()
 	})
 	.defined();
 
+WebBrowser.maybeCompleteAuthSession(); // required for web only
+const redirectTo = makeRedirectUri();
+
+const createSessionFromUrl = async (url: string) => {
+	const { params, errorCode } = QueryParams.getQueryParams(url);
+
+	if (errorCode) throw new Error(errorCode);
+	const { access_token, refresh_token } = params;
+
+	if (!access_token) return;
+
+	const { data, error } = await supabase.auth.setSession({
+		access_token,
+		refresh_token,
+	});
+	if (error) throw error;
+	return data.session;
+};
+
+const signIn = async (values: Yup.InferType<typeof validSchema>) => {
+	const { error } = await supabase.auth.signInWithPassword({
+		email: values.email,
+		password: values.password,
+	});
+
+	if (error) Alert.alert(error.message);
+};
+
+const signInWith = async (provider: Provider) => {
+	const { error, data } = await supabase.auth.signInWithOAuth({
+		provider,
+		options: {
+			redirectTo,
+			skipBrowserRedirect: true,
+		},
+	});
+
+	if (error) modal.error(error.message);
+
+	const res = await WebBrowser.openAuthSessionAsync(data?.url ?? "", redirectTo);
+
+	if (res.type === "success") {
+		const { url } = res;
+		await createSessionFromUrl(url);
+	}
+};
+
 export default function LoginPage() {
-	async function signIn(values: Yup.InferType<typeof validSchema>) {
-		const { error } = await supabase.auth.signInWithPassword({
-			email: values.email,
-			password: values.password,
-		});
-
-		if (error) Alert.alert(error.message);
-	}
-
-	async function signInWith(provider: Provider) {
-		const { error, data } = await supabase.auth.signInWithOAuth({
-			provider,
-		});
-
-		if (error) Alert.alert(error.message);
-		Linking.openURL(data.url!).catch((err) => console.error("An error occurred: ", err));
-	}
+	const url = Linking.useURL();
+	if (url) createSessionFromUrl(url);
 
 	return (
 		<ScrollView keyboardShouldPersistTaps="always">
@@ -121,11 +158,11 @@ export default function LoginPage() {
 				</View>
 
 				<View className="space-y-2">
-					<SocialButton onPress={() => signInWith("discord")} brand="discord" disabled />
-					<SocialButton onPress={() => signInWith("spotify")} brand="spotify" disabled />
-					<SocialButton onPress={() => signInWith("google")} brand="google" disabled />
-					<SocialButton onPress={() => signInWith("facebook")} brand="facebook" disabled />
-					<SocialButton onPress={() => signInWith("github")} brand="github" disabled />
+					<SocialButton onPress={() => signInWith("discord")} brand="discord" />
+					<SocialButton onPress={() => signInWith("spotify")} brand="spotify" />
+					{/* <SocialButton onPress={() => signInWith("google")} brand="google" /> */}
+					{/* <SocialButton onPress={() => signInWith("facebook")} brand="facebook" disabled />
+					<SocialButton onPress={() => signInWith("github")} brand="github" disabled /> */}
 				</View>
 
 				{/* <View className="self-stretch my-1">

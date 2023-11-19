@@ -10,7 +10,7 @@ export default function App() {
 			if (session) {
 				router.replace("/(drawer)/(tabs)/home/");
 			} else {
-				console.log("no user");
+				// console.log("no user");
 			}
 		});
 
@@ -18,7 +18,7 @@ export default function App() {
 			if (session) {
 				router.replace("/(drawer)/(tabs)/home/");
 			} else {
-				console.log("no user");
+				// console.log("no user");
 				router.replace("/(auth)/onboarding");
 			}
 		});

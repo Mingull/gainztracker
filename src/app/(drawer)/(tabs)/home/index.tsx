@@ -2,11 +2,8 @@ import { Text } from "@/components";
 import { useUser } from "@/lib/contexts/User.context";
 import { supabase } from "@/lib/db/supabase";
 import { Exercise, Set, Workout } from "@/lib/types/Workout";
-import { prettyPrint } from "@/lib/utils";
-import React, { useEffect } from "react"; // Import React
-import { ScrollView, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useEffect, useState } from "react"; // Import React
+import { FlatList, View } from "react-native";
 
 export default function HomePage() {
 	const { user, loading } = useUser();
@@ -36,37 +33,31 @@ export default function HomePage() {
 	};
 
 	return (
-		<SafeAreaView className="items-center justify-center flex-1 pb-20 bg-zinc-200">
+		<View className="h-full px-5 pt-10 pb-20 bg-white">
 			{workouts ? (
-				<FlatList
-					data={workouts}
-					renderItem={({ index, item, separators }) => {
-						return (
-							<View style={{ gap: 20 }}>
-								<View className="p-4 bg-blue-500">
+				<>
+					<FlatList
+						data={workouts}
+						renderItem={({ index, item }) => {
+							const createdAt = new Date(Date.parse(item.createdAt));
+							return (
+								<View
+									className="p-4 rounded-lg bg-zinc-100"
+									style={{
+										marginBottom: index !== workouts.length - 1 ? 15 : 0,
+									}}
+								>
 									<Text>{item.name}</Text>
-									<FlatList
-										data={item.exercises}
-										renderItem={({ item }) => {
-											return (
-												<View style={{ gap: 20 }}>
-													<View className="py-4 bg-blue-500">
-														<Text>{item.name}</Text>
-													</View>
-												</View>
-											);
-										}}
-										horizontal={true}
-									/>
+									<Text className="">{createdAt.toDateString()}</Text>
 								</View>
-							</View>
-						);
-					}}
-					keyExtractor={(item) => item.id.toString()}
-				/>
+							);
+						}}
+						keyExtractor={(item) => item.id.toString()}
+					/>
+				</>
 			) : (
 				<Text>No workouts</Text>
 			)}
-		</SafeAreaView>
+		</View>
 	);
 }

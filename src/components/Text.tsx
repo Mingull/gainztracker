@@ -11,6 +11,7 @@ const textVariants = cva("", {
 			title: "text-center",
 			bordered: "border border-zinc-700 rounded py-2 px-4",
 			login: "text-xl font-bold self-start flex justify-center text-white",
+			
 		},
 		transform: {
 			uppercase: "uppercase",
