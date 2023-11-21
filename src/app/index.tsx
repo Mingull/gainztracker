@@ -2,6 +2,7 @@ import { router } from "expo-router";
 import { useEffect } from "react";
 import { supabase } from "@/lib/db/supabase";
 import { Text, View } from "react-native";
+
 // import "react-native-url-polyfill/auto";
 
 export default function App() {

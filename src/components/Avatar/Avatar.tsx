@@ -2,6 +2,7 @@ import { supabase } from "@/lib/db/supabase";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Image, StyleProp, ViewStyle, ImageStyle } from "react-native";
 import { Skeleton } from "../Skeleton";
+import Animated from "react-native-reanimated";
 
 export interface AvatarProps {
 	url: string | null;
@@ -44,7 +45,7 @@ export default function Avatar({ height = 150, width = 150, url, style }: Avatar
 	return (
 		<>
 			{avatarUrl && !loading ? (
-				<Image
+				<Animated.Image
 					source={{ uri: avatarUrl }}
 					accessibilityLabel="Avatar"
 					style={[{ height, width }, styles.avatar, styles.image, style as StyleProp<ImageStyle>]}

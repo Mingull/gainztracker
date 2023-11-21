@@ -10,6 +10,7 @@ import { Dumbbell, Home, LucideIcon, Trophy, Users } from "lucide-react-native";
 import { StyledComponent } from "nativewind";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, {
 	SharedValue,
 	interpolate,
@@ -47,7 +48,9 @@ export default function TabsLayout() {
 
 	return (
 		<>
-			<Navbar user={user} loading={loading} />
+			<GestureHandlerRootView>
+				<Navbar user={user} loading={loading} />
+			</GestureHandlerRootView>
 			<Tabs
 				screenOptions={{
 					headerShown: false,

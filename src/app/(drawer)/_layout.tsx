@@ -5,6 +5,7 @@ import { Drawer } from "expo-router/drawer";
 import { User } from "lucide-react-native";
 import { StyledComponent } from "nativewind";
 import { View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function Layout() {
 	return (

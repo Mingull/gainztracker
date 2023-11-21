@@ -3,20 +3,24 @@ import { Session } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import { supabase } from "../db/supabase";
 import { createSafeContext } from "../utils";
+import { Avatar } from "@/components/Avatar";
+import { AvatarProps } from "@/components/Avatar/Avatar";
 
 export interface UserCtx {
-	user: UserInfo;
 	loading: boolean;
+	user: UserInfo;
+
 	update: (user: UserInfo) => {};
 }
 
 export type UserInfo = {
 	id: string | null;
 	username: string | null;
+	email: string | null;
 	firstName: string | null;
 	lastName: string | null;
 	website: string | null;
-	avatarUrl: string | null;
+	avatar: { url: string | null; image: ({ height, width, style }: Omit<AvatarProps, "url">) => JSX.Element };
 	createdAt: string | null;
 	updatedAt: string | null;
 };
@@ -28,6 +32,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [userId, setUserId] = useState<string | null>(null);
 	const [username, setUsername] = useState<string | null>(null);
+	const [email, setEmail] = useState<string | null>(null);
 	const [firstName, setFirstName] = useState<string | null>(null);
 	const [lastName, setLastName] = useState<string | null>(null);
 	const [website, setWebsite] = useState<string | null>(null);
@@ -53,7 +58,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 			if (!session?.user) throw new Error("No user on the session!");
 			let { data, error, status } = await supabase
 				.from("profiles")
-				.select(`username, first_name, last_name, avatar_url, website, created_at, updated_at`)
+				.select(`username, email, first_name, last_name, avatar_url, website, created_at, updated_at`)
 				.eq("id", session?.user.id)
 				.single();
 
@@ -63,6 +68,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 			if (data) {
 				setUserId(session?.user.id);
 				setUsername(data.username);
+				setEmail(data.email);
 				setFirstName(data.first_name);
 				setLastName(data.last_name);
 				setAvatarUrl(data.avatar_url);
@@ -75,7 +81,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 		}
 	};
 
-	const update = async ({ username, firstName, lastName, website, avatarUrl }: UserInfo) => {
+	const update = async ({ username, firstName, lastName, website, avatar }: UserInfo) => {
 		try {
 			setLoading(true);
 			if (!session?.user) throw new Error("No user on the session!");
@@ -86,7 +92,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 				first_name: firstName,
 				last_name: lastName,
 				website,
-				avatar_url: avatarUrl,
+				avatar_url: avatar.url,
 				created_at: createdAt,
 				updated_at: new Date().toString(),
 			};
@@ -110,7 +116,21 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<Provider
 			value={{
-				user: { id: userId, username, firstName, lastName, website, avatarUrl, createdAt, updatedAt },
+				user: {
+					id: userId,
+					username,
+					email,
+					firstName,
+					lastName,
+					website,
+					avatar: {
+						url: avatarUrl,
+						image: ({ height = 150, width = 150, style }: Omit<AvatarProps, "url">) =>
+							Avatar({ url: avatarUrl, height, width, style }),
+					},
+					createdAt,
+					updatedAt,
+				},
 				loading,
 				update,
 			}}

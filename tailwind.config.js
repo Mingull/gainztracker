@@ -11,6 +11,9 @@ module.exports = {
 				github: "#333",
 				google: "#f1f1f1",
 			},
+			borderRadius: {
+				"4xl": 32,
+			},
 		},
 	},
 	plugins: [],
