@@ -3,7 +3,7 @@ import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { DrawerActions, ParamListBase } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useDeferredValue } from "react";
+import React, { useDeferredValue, useRef } from "react";
 import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Skeleton } from "./Skeleton";
@@ -11,6 +11,7 @@ import Text from "./Text";
 import Animated, {
 	Extrapolate,
 	interpolate,
+	interpolateColor,
 	useAnimatedGestureHandler,
 	useAnimatedStyle,
 	useDerivedValue,
@@ -26,75 +27,93 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 	const NAVBAR_HEIGHT = 40 + 16 + 16;
 	const NAVBAR_WIDTH = SCREEN_WIDTH - 48;
 	const nav = useNavigation<DrawerNavigationProp<ParamListBase>>();
-	const height = useSharedValue(0);
+	const navbarHeight = useSharedValue(0);
+	const textWrapperWidth = useSharedValue(0);
+	const usernameWidth = useSharedValue(0);
+	const emailWidth = useSharedValue(0);
 
 	const swipeDownGestureHandler = useAnimatedGestureHandler({
 		onStart: (event) => {},
 		onActive: (event) => {
-			height.value = event.translationY;
+			navbarHeight.value = event.translationY;
 		},
 		onEnd: (event) => {
-			if (height.value > NAVBAR_HEIGHT / 2) {
-				height.value = NAVBAR_HEIGHT;
+			if (navbarHeight.value > NAVBAR_HEIGHT / 2) {
+				navbarHeight.value = NAVBAR_HEIGHT;
 			} else {
-				height.value = 0;
+				navbarHeight.value = 0;
 			}
 		},
 	});
 
 	// useDerivedValue(() => {
-	// 	console.log(height.value);
+	// 	console.log(textWrapperWidth.value);
+	// 	console.log(usernameWidth.value);
+	// 	console.log(emailWidth.value);
 	// });
 
 	const swipeDownAnimation = useAnimatedStyle(() => ({
-		height: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [NAVBAR_HEIGHT, NAVBAR_HEIGHT * 3.5])),
+		height: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [NAVBAR_HEIGHT, NAVBAR_HEIGHT * 3.5])),
+	}));
+
+	const textWrapperAnimation = useAnimatedStyle(() => ({
+		transform: [
+			{
+				translateX: withTiming(
+					interpolate(
+						navbarHeight.value,
+						[0, NAVBAR_HEIGHT],
+						[0, (NAVBAR_WIDTH - (48 + 24)) / 2 - textWrapperWidth.value]
+					)
+				),
+			},
+			{ translateY: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, 120])) },
+		],
 	}));
 
 	const imageAnimation = useAnimatedStyle(() => ({
-		width: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [40, 120])),
-		height: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [40, 120])),
-		borderRadius: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [20, 60])),
+		width: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [40, 120])),
+		height: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [40, 120])),
+		borderRadius: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [20, 60])),
 		transform: [
 			{
-				translateX: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [0, NAVBAR_WIDTH / 2 - 60])),
+				translateX: withSpring(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, NAVBAR_WIDTH / 2 - 60])),
 			},
 		],
-		marginRight: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [10, 0])),
+		marginRight: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [10, 0])),
 	}));
 
 	const usernameAnimation = useAnimatedStyle(() => {
 		return {
-			fontSize: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [16, 30])),
-			lineHeight: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [24, 36])),
+			fontSize: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [16, 30])),
+			lineHeight: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [24, 36])),
+			// width: usernameRef.current?.measureLayout().width,
 			transform: [
-				{ translateY: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [10, 95])) },
 				{
-					translateX: withTiming(
+					translateX: withSpring(
 						interpolate(
-							height.value,
+							navbarHeight.value,
 							[0, NAVBAR_HEIGHT],
-							[0, -(NAVBAR_WIDTH - 48) + (NAVBAR_WIDTH + 24) / 2]
+							[0, textWrapperWidth.value / 2 - usernameWidth.value / 2]
 						)
 					),
 				},
+				{ translateY: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [5, 0])) },
 			],
 		};
 	});
 
 	const emailAnimation = useAnimatedStyle(() => {
-		const width = SCREEN_WIDTH - (48 + 50);
 		return {
-			opacity: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [0, 1])),
+			opacity: withSpring(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, 1])),
 			transform: [
+				{ translateY: withSpring(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, 0])) },
 				{
-					translateY: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [10, 100])),
-				},
-				{
-					translateX: withTiming(
+					translateX: withSpring(
 						interpolate(
-							height.value,
+							navbarHeight.value,
 							[0, NAVBAR_HEIGHT],
-							[0, -(NAVBAR_WIDTH - 48) + (NAVBAR_WIDTH + 24) / 2]
+							[0, textWrapperWidth.value / 2 - emailWidth.value / 2]
 						)
 					),
 				},
@@ -109,20 +128,38 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 				{/* <StyledComponent component={Menu} className="text-blue-500" /> */}
 				{!loading ? (
 					<Pressable onPress={() => nav.dispatch(DrawerActions.toggleDrawer)}>
-						<View className="flex-row items-center">
+						<View className="flex-row">
 							<user.avatar.image
 								style={[styles.profileImage, imageAnimation]}
 								width={styles.profileImage.width}
 								height={styles.profileImage.height}
 							/>
-							<View className="justify-center">
-								<Text style={[usernameAnimation]} className="w-48 text-3xl font-bold text-zinc-50">
+							<Animated.View
+								onLayout={(e) => {
+									textWrapperWidth.value = e.nativeEvent.layout.width;
+								}}
+								style={[textWrapperAnimation]}
+							>
+								<Text
+									onLayout={(e) => {
+										usernameWidth.value = e.nativeEvent.layout.width;
+									}}
+									style={[usernameAnimation]}
+									className="self-start text-3xl font-bold text-zinc-50"
+								>
 									{user.username}
 								</Text>
-								<Text style={[emailAnimation]} className="w-48 text-sm font-bold text-zinc-500">
+
+								<Text
+									onLayout={(e) => {
+										emailWidth.value = e.nativeEvent.layout.width;
+									}}
+									style={[emailAnimation]}
+									className="text-sm font-bold text-zinc-500"
+								>
 									{user.email}
 								</Text>
-							</View>
+							</Animated.View>
 						</View>
 					</Pressable>
 				) : (

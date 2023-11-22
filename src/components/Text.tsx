@@ -1,7 +1,7 @@
 import { Text as RNText, TextProps as RNTextProps, StyleProp, TextStyle } from "react-native";
 import { cva, VariantProps } from "cva";
 import cn from "@/lib/utils/ClassName";
-import React from "react";
+import React, { useRef } from "react";
 import Animated from "react-native-reanimated";
 
 const textVariants = cva("", {
@@ -11,7 +11,6 @@ const textVariants = cva("", {
 			title: "text-center",
 			bordered: "border border-zinc-700 rounded py-2 px-4",
 			login: "text-xl font-bold self-start flex justify-center text-white",
-			
 		},
 		transform: {
 			uppercase: "uppercase",
@@ -42,11 +41,17 @@ const textVariants = cva("", {
 	},
 });
 
-export interface TextProps extends RNTextProps, VariantProps<typeof textVariants> {}
+export interface TextProps extends RNTextProps, VariantProps<typeof textVariants> {
+	ref?: React.LegacyRef<Animated.Text> | undefined;
+}
 
-export function Text({ children, variant, validation, transform, size, className, ...props }: TextProps) {
+export function Text({ children, variant, validation, transform, size, className, ref, ...props }: TextProps) {
 	return (
-		<Animated.Text className={cn(textVariants({ variant, validation, transform, size, className }))} {...props}>
+		<Animated.Text
+			ref={ref}
+			className={cn(textVariants({ variant, validation, transform, size, className }))}
+			{...props}
+		>
 			{children}
 		</Animated.Text>
 	);
