@@ -66,7 +66,6 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 		return {
 			fontSize: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [16, 30])),
 			lineHeight: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [24, 36])),
-			width: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [0, NAVBAR_WIDTH])),
 			transform: [
 				{ translateY: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [10, 95])) },
 				{
@@ -85,9 +84,7 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 	const emailAnimation = useAnimatedStyle(() => {
 		const width = SCREEN_WIDTH - (48 + 50);
 		return {
-			// opacity: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [0, 1])),
-			width: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [0, NAVBAR_WIDTH])),
-			textAlign: withTiming(height.value >= NAVBAR_HEIGHT ? "left" : "center"),
+			opacity: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [0, 1])),
 			transform: [
 				{
 					translateY: withTiming(interpolate(height.value, [0, NAVBAR_HEIGHT], [10, 100])),
