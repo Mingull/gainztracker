@@ -12,7 +12,6 @@ export default function Update({ width = 150, height = 150, url, onUpload }: Upd
 	const [uploading, setUploading] = useState(false);
 
 	async function uploadAvatar() {
-		console.log("uploading");
 		try {
 			setUploading(true);
 
@@ -26,8 +25,6 @@ export default function Update({ width = 150, height = 150, url, onUpload }: Upd
 
 			if (canceled) throw new Error("Cancelled");
 
-			console.log(JSON.stringify(file, null, 4));
-
 			const photo = {
 				uri: file[0].uri,
 				type: file[0].type! + "/" + file[0].uri.split(".").pop(),
@@ -37,9 +34,6 @@ export default function Update({ width = 150, height = 150, url, onUpload }: Upd
 			const formData = new FormData();
 
 			formData.append("file", photo as unknown as Blob, photo.name);
-
-			console.log("photoBlob", photo);
-			console.log("formData", JSON.stringify(formData, null, 4));
 
 			const { error } = await supabase.storage.from("avatars").upload(photo.name, formData);
 

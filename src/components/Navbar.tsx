@@ -36,9 +36,15 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 		onStart: (event) => {},
 		onActive: (event) => {
 			navbarHeight.value = event.translationY;
+			if (navbarHeight.value > NAVBAR_HEIGHT + 100) {
+				navbarHeight.value = NAVBAR_HEIGHT;
+			} else {
+				navbarHeight.value = 0;
+			}
 		},
 		onEnd: (event) => {
-			if (navbarHeight.value > NAVBAR_HEIGHT / 2) {
+			console.log(event.velocityY);
+			if (navbarHeight.value > NAVBAR_HEIGHT / 2 || event.velocityY > 100) {
 				navbarHeight.value = NAVBAR_HEIGHT;
 			} else {
 				navbarHeight.value = 0;
@@ -77,7 +83,13 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 		borderRadius: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [20, 60])),
 		transform: [
 			{
-				translateX: withSpring(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, NAVBAR_WIDTH / 2 - 60])),
+				translateX: withSpring(
+					interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, NAVBAR_WIDTH / 2 - 60]),
+					{
+						velocity: 10,
+						damping: 10,
+					}
+				),
 			},
 		],
 		marginRight: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [10, 0])),
@@ -98,7 +110,7 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 						)
 					),
 				},
-				{ translateY: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [5, 0])) },
+				{ translateY: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [5, 15])) },
 			],
 		};
 	});
@@ -107,7 +119,7 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 		return {
 			opacity: withSpring(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, 1])),
 			transform: [
-				{ translateY: withSpring(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, 0])) },
+				{ translateY: withSpring(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, 15])) },
 				{
 					translateX: withSpring(
 						interpolate(

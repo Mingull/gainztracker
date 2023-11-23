@@ -3,6 +3,7 @@ import { shadows } from "@/constants/shadows";
 import { useUser } from "@/lib/contexts/User.context";
 import { supabase } from "@/lib/db/supabase";
 import { Exercise, Set, Workout } from "@/lib/types/Workout";
+import formatDateTime from "@/lib/utils/formatDate";
 import React, { useEffect, useState } from "react"; // Import React
 import { FlatList, View } from "react-native";
 
@@ -56,7 +57,7 @@ export default function HomePage() {
 										}}
 									>
 										<Text>{item.name}</Text>
-										<Text className="">{createdAt.toDateString()}</Text>
+										<Text className="">{formatDateTime(createdAt)}</Text>
 									</View>
 								);
 							}}
