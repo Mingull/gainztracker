@@ -43,7 +43,7 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 			}
 		},
 		onEnd: (event) => {
-			console.log(event.velocityY);
+			// console.log(event.velocityY);
 			if (navbarHeight.value > NAVBAR_HEIGHT / 2 || event.velocityY > 100) {
 				navbarHeight.value = NAVBAR_HEIGHT;
 			} else {
@@ -59,7 +59,7 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 	// });
 
 	const swipeDownAnimation = useAnimatedStyle(() => ({
-		height: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [NAVBAR_HEIGHT, NAVBAR_HEIGHT * 3.5])),
+		height: withSpring(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [NAVBAR_HEIGHT, NAVBAR_HEIGHT * 3.5])),
 	}));
 
 	const textWrapperAnimation = useAnimatedStyle(() => ({
