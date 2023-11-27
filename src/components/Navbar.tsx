@@ -24,8 +24,8 @@ import { PanGestureHandler } from "react-native-gesture-handler";
 import { SCREEN_WIDTH } from "@/constants/screen";
 
 export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "user">) {
-	const NAVBAR_HEIGHT = 40 + 16 + 16;
-	const NAVBAR_WIDTH = SCREEN_WIDTH - 48;
+	const NAVBAR_HEIGHT = 50 + 16 + 16;
+	const NAVBAR_WIDTH = SCREEN_WIDTH - 40;
 	const nav = useNavigation<DrawerNavigationProp<ParamListBase>>();
 	const navbarHeight = useSharedValue(0);
 	const textWrapperWidth = useSharedValue(0);
@@ -36,14 +36,15 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 		onStart: (event) => {},
 		onActive: (event) => {
 			navbarHeight.value = event.translationY;
-			if (navbarHeight.value > NAVBAR_HEIGHT + 100) {
-				navbarHeight.value = NAVBAR_HEIGHT;
-			} else {
-				navbarHeight.value = 0;
-			}
+			// console.log(event.velocityY);
+			// if (event.velocityY > 750) {
+			// 	navbarHeight.value = NAVBAR_HEIGHT;
+			// } else {
+			// 	navbarHeight.value = 0;
+			// }
 		},
 		onEnd: (event) => {
-			// console.log(event.velocityY);
+			console.log(event.velocityY);
 			if (navbarHeight.value > NAVBAR_HEIGHT / 2 || event.velocityY > 100) {
 				navbarHeight.value = NAVBAR_HEIGHT;
 			} else {
@@ -53,52 +54,65 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 	});
 
 	// useDerivedValue(() => {
-	// 	console.log(textWrapperWidth.value);
-	// 	console.log(usernameWidth.value);
-	// 	console.log(emailWidth.value);
+	// 	console.log("SCREEN_WIDTH", SCREEN_WIDTH);
+	// 	console.log("NAVBAR_HEIGHT", NAVBAR_HEIGHT);
+	// 	console.log("NAVBAR_WIDTH", NAVBAR_WIDTH);
+	// 	console.log("textWrapperWidth", textWrapperWidth.value);
+	// 	console.log("usernameWidth", usernameWidth.value);
+	// 	console.log("emailAnimation", emailWidth.value);
 	// });
 
 	const swipeDownAnimation = useAnimatedStyle(() => ({
-		height: withSpring(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [NAVBAR_HEIGHT, NAVBAR_HEIGHT * 3.5])),
+		height: withSpring(
+			interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [NAVBAR_HEIGHT, NAVBAR_HEIGHT * 3.5], Extrapolate.CLAMP)
+		),
+	}));
+
+	const imageAnimation = useAnimatedStyle(() => ({
+		width: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [50, 120], Extrapolate.CLAMP)),
+		height: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [50, 120], Extrapolate.CLAMP)),
+		borderRadius: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [25, 60], Extrapolate.CLAMP)),
+		transform: [
+			{
+				translateY: withSpring(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, 20], Extrapolate.CLAMP)),
+			},
+			{
+				translateX: withSpring(
+					interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, NAVBAR_WIDTH / 2 - 60], Extrapolate.CLAMP)
+				),
+			},
+		],
 	}));
 
 	const textWrapperAnimation = useAnimatedStyle(() => ({
+		marginLeft: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [10, 0], Extrapolate.CLAMP)),
 		transform: [
+			{
+				translateX: withTiming(
+					interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, -120], Extrapolate.CLAMP)
+				),
+			},
 			{
 				translateX: withTiming(
 					interpolate(
 						navbarHeight.value,
 						[0, NAVBAR_HEIGHT],
-						[0, (NAVBAR_WIDTH - (48 + 24)) / 2 - textWrapperWidth.value]
+						[0, NAVBAR_WIDTH / 2 - textWrapperWidth.value / 2],
+						Extrapolate.CLAMP
 					)
 				),
 			},
-			{ translateY: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, 120])) },
-		],
-	}));
-
-	const imageAnimation = useAnimatedStyle(() => ({
-		width: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [40, 120])),
-		height: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [40, 120])),
-		borderRadius: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [20, 60])),
-		transform: [
 			{
-				translateX: withSpring(
-					interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, NAVBAR_WIDTH / 2 - 60]),
-					{
-						velocity: 10,
-						damping: 10,
-					}
+				translateY: withTiming(
+					interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, 150], Extrapolate.CLAMP)
 				),
 			},
 		],
-		marginRight: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [10, 0])),
 	}));
-
 	const usernameAnimation = useAnimatedStyle(() => {
 		return {
-			fontSize: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [16, 30])),
-			lineHeight: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [24, 36])),
+			fontSize: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [16, 30], Extrapolate.CLAMP)),
+			lineHeight: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [24, 36], Extrapolate.CLAMP)),
 			// width: usernameRef.current?.measureLayout().width,
 			transform: [
 				{
@@ -106,26 +120,36 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 						interpolate(
 							navbarHeight.value,
 							[0, NAVBAR_HEIGHT],
-							[0, textWrapperWidth.value / 2 - usernameWidth.value / 2]
+							[0, textWrapperWidth.value / 2 - usernameWidth.value / 2],
+							Extrapolate.CLAMP
 						)
 					),
 				},
-				{ translateY: withTiming(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [5, 15])) },
+				{
+					translateY: withTiming(
+						interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [10, 15], Extrapolate.CLAMP)
+					),
+				},
 			],
 		};
 	});
 
 	const emailAnimation = useAnimatedStyle(() => {
 		return {
-			opacity: withSpring(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, 1])),
+			opacity: withSpring(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, 1], Extrapolate.CLAMP)),
 			transform: [
-				{ translateY: withSpring(interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, 15])) },
+				{
+					translateY: withSpring(
+						interpolate(navbarHeight.value, [0, NAVBAR_HEIGHT], [0, 15], Extrapolate.CLAMP)
+					),
+				},
 				{
 					translateX: withSpring(
 						interpolate(
 							navbarHeight.value,
 							[0, NAVBAR_HEIGHT],
-							[0, textWrapperWidth.value / 2 - emailWidth.value / 2]
+							[0, textWrapperWidth.value / 2 - emailWidth.value / 2],
+							Extrapolate.CLAMP
 						)
 					),
 				},
@@ -135,7 +159,7 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 
 	return (
 		<SafeAreaView className="relative z-10 border-b border-b-zinc-900 bg-zinc-900">
-			<Animated.View className="px-6 py-4" style={[swipeDownAnimation]}>
+			<Animated.View className="px-5 py-4" style={[swipeDownAnimation]}>
 				<StatusBar />
 				{/* <StyledComponent component={Menu} className="text-blue-500" /> */}
 				{!loading ? (
@@ -167,7 +191,7 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 										emailWidth.value = e.nativeEvent.layout.width;
 									}}
 									style={[emailAnimation]}
-									className="text-sm font-bold text-zinc-500"
+									className="self-start text-xs font-bold text-zinc-500"
 								>
 									{user.email}
 								</Text>
@@ -186,7 +210,7 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 					style={{
 						position: "absolute",
 						width: "100%",
-						height: NAVBAR_HEIGHT / 2,
+						height: NAVBAR_HEIGHT / 1.5,
 						bottom: 0,
 						left: 0,
 						// backgroundColor: "red",
@@ -232,10 +256,10 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	profileImage: {
-		width: 40,
-		height: 40,
-		borderRadius: 20,
-		marginRight: 10,
+		width: 50,
+		height: 50,
+		borderRadius: 25,
+		// marginRight: 10,
 	},
 	profileText: {
 		color: "#333",
