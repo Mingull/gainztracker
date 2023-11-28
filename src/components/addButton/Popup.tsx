@@ -17,50 +17,68 @@ export default function AddButton({ items, ...props }: PopupProps) {
 
 	const slideinAnimation = useAnimatedStyle(() => ({
 		transform: [
-			{ translateX: -(POPUP_WIDTH - 64) / 2 },
+			{ translateY: 0 },
 			{
-				translateY: isOpen.value ? withTiming(0) : withTiming(popupHeight + 102),
+				translateX: isOpen.value ? withTiming(-POPUP_WIDTH + 64) : withTiming(POPUP_WIDTH),
+			},
+		],
+	}));
+
+	const buttonAnimation = useAnimatedStyle(() => ({
+		backgroundColor: isOpen.value ? withTiming("rgb(147, 197, 253)") : withTiming("rgb(59, 130, 246)"),
+	}));
+
+	const iconAnimation = useAnimatedStyle(() => ({
+		transform: [
+			{
+				rotate: isOpen.value ? withSpring("225deg") : withSpring("0deg"),
 			},
 		],
 	}));
 
 	return (
-		<TouchableWithoutFeedback
-			{...props}
-			onPress={() => {
-				isOpen.value = !isOpen.value;
-			}}
-		>
-			<View style={{ position: "relative" }}>
-				<View className="items-center justify-center w-16 h-16 mb-10 bg-blue-500 rounded-full">
-					<StyledComponent component={Plus} strokeWidth={2.5} size={38} className={"text-zinc-50"} />
+		<View style={{ position: "absolute", bottom: 40, right: 10 }}>
+			<TouchableWithoutFeedback
+				{...props}
+				onPress={() => {
+					isOpen.value = !isOpen.value;
+				}}
+			>
+				<View style={{ position: "relative" }}>
+					<Animated.View
+						style={[buttonAnimation]}
+						className="items-center justify-center w-16 h-16 mb-10 bg-blue-300 rounded-2xl"
+					>
+						<Animated.View style={[iconAnimation]}>
+							<StyledComponent component={Plus} strokeWidth={2.5} size={38} className={"text-zinc-50"} />
+						</Animated.View>
+					</Animated.View>
+					<Animated.View
+						style={[
+							{
+								rowGap: popupGap,
+								width: POPUP_WIDTH,
+								height: popupHeight,
+								transform: [{ translateY: popupHeight }],
+							},
+							slideinAnimation,
+						]}
+						className={"absolute justify-center bg-zinc-500 bottom-full mb-2.5 items-end"}
+					>
+						{items.map((item, i) => (
+							<Button
+								key={i}
+								{...item}
+								delay={item.delay}
+								isOpen={isOpen}
+								style={{ zIndex: i }}
+								popupHeight={popupHeight}
+							/>
+						))}
+					</Animated.View>
 				</View>
-
-				<Animated.View
-					style={[
-						{
-							rowGap: popupGap,
-							width: POPUP_WIDTH,
-							height: popupHeight,
-							transform: [{ translateY: popupHeight + 102 }],
-						},
-						slideinAnimation,
-					]}
-					className={"absolute justify-center bottom-full mb-2.5 items-center"}
-				>
-					{items.map((item, i) => (
-						<Button
-							key={i}
-							{...item}
-							delay={item.delay}
-							isOpen={isOpen}
-							style={{ zIndex: i }}
-							popupHeight={popupHeight}
-						/>
-					))}
-				</Animated.View>
-			</View>
-		</TouchableWithoutFeedback>
+			</TouchableWithoutFeedback>
+		</View>
 	);
 }
 const styles = StyleSheet.create({

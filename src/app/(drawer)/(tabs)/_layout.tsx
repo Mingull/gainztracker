@@ -5,11 +5,9 @@ import { shadows } from "@/constants/shadows";
 import { useUser } from "@/lib/contexts/User.context";
 import cn from "@/lib/utils/ClassName";
 import { Tabs, router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { Dumbbell, Home, LucideIcon, Trophy, Users } from "lucide-react-native";
+import { Dumbbell, Home, LucideIcon, TabletsIcon, Trophy, Users } from "lucide-react-native";
 import { StyledComponent } from "nativewind";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, {
 	SharedValue,
@@ -82,26 +80,6 @@ export default function TabsLayout() {
 									icon={Home}
 									label="Home"
 									currentTabIndex={currentTabIndex}
-								/>
-							);
-						},
-					}}
-				/>
-
-				<Tabs.Screen
-					name="actionButton"
-					options={{
-						tabBarShowLabel: false,
-						tabBarIcon: ({ focused }) => {
-							return (
-								<AddButton
-									onPress={() => {
-										addButtonShown.value = !addButtonShown.value;
-									}}
-									onLongPress={() => {
-										addButtonShown.value = !addButtonShown.value;
-									}}
-									items={pupupItems}
 								/>
 							);
 						},
@@ -185,6 +163,15 @@ export default function TabsLayout() {
 					// })}
 				/> */}
 			</Tabs>
+			<AddButton
+				onPress={() => {
+					addButtonShown.value = !addButtonShown.value;
+				}}
+				onLongPress={() => {
+					addButtonShown.value = !addButtonShown.value;
+				}}
+				items={pupupItems}
+			/>
 			{/* <Animated.View
 				style={[
 					{
