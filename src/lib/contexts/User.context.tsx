@@ -14,15 +14,15 @@ export interface UserCtx {
 }
 
 export type UserInfo = {
-	id: string | null;
-	username: string | null;
-	email: string | null;
-	firstName: string | null;
-	lastName: string | null;
-	website: string | null;
-	avatar: { url: string | null; image: ({ height, width, style }: Omit<AvatarProps, "url">) => JSX.Element };
-	createdAt: string | null;
-	updatedAt: string | null;
+	id: string;
+	username: string;
+	email: string;
+	firstName: string;
+	lastName: string;
+	website: string;
+	avatar: { url: string; image: ({ height, width, style }: Omit<AvatarProps, "url">) => JSX.Element };
+	createdAt: string;
+	updatedAt: string;
 };
 
 const [Provider, useUser] = createSafeContext<UserCtx>("useUser() must be used within a UserProvider");
@@ -30,15 +30,15 @@ const [Provider, useUser] = createSafeContext<UserCtx>("useUser() must be used w
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
 	const [session, setSession] = useState<Session | null>(null);
 	const [loading, setLoading] = useState<boolean>(false);
-	const [userId, setUserId] = useState<string | null>(null);
-	const [username, setUsername] = useState<string | null>(null);
-	const [email, setEmail] = useState<string | null>(null);
-	const [firstName, setFirstName] = useState<string | null>(null);
-	const [lastName, setLastName] = useState<string | null>(null);
-	const [website, setWebsite] = useState<string | null>(null);
-	const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-	const [createdAt, setCreatedAt] = useState<string | null>(null);
-	const [updatedAt, setUpdatedAt] = useState<string | null>(null);
+	const [userId, setUserId] = useState<string>("");
+	const [username, setUsername] = useState<string>("");
+	const [email, setEmail] = useState<string>("");
+	const [firstName, setFirstName] = useState<string>("");
+	const [lastName, setLastName] = useState<string>("");
+	const [website, setWebsite] = useState<string>("");
+	const [avatarUrl, setAvatarUrl] = useState<string>("");
+	const [createdAt, setCreatedAt] = useState<string>("");
+	const [updatedAt, setUpdatedAt] = useState<string>("");
 
 	useEffect(() => {
 		supabase.auth.getSession().then(({ data: { session } }) => {
@@ -67,14 +67,14 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 			}
 			if (data) {
 				setUserId(session?.user.id);
-				setUsername(data.username);
-				setEmail(data.email);
-				setFirstName(data.first_name);
-				setLastName(data.last_name);
-				setAvatarUrl(data.avatar_url);
-				setWebsite(data.website);
-				setCreatedAt(data.created_at);
-				setUpdatedAt(data.updated_at);
+				setUsername(data.username!);
+				setEmail(data.email!);
+				setFirstName(data.first_name!!);
+				setLastName(data.last_name!);
+				setAvatarUrl(data.avatar_url!);
+				setWebsite(data.website!);
+				setCreatedAt(data.created_at!);
+				setUpdatedAt(data.updated_at!);
 			}
 		} finally {
 			setLoading(false);

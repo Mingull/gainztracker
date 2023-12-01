@@ -25,26 +25,6 @@ export default function TabsLayout() {
 	const currentTabIndex = useSharedValue(0);
 	const addButtonShown = useSharedValue(false);
 
-	const pupupItems: PopupButton[] = [
-		{
-			delay: 1,
-			title: "Add Workout",
-			icon: Dumbbell,
-			onPress: () => {
-				addButtonShown.value = false;
-				router.replace("/(drawer)/(tabs)/actionButton/workout");
-			},
-		},
-		{
-			delay: 0,
-			title: "Add Group",
-			icon: Users,
-			onPress: () => {
-				console.log("Add Group");
-			},
-		},
-	];
-
 	return (
 		<>
 			<GestureHandlerRootView>
@@ -71,7 +51,7 @@ export default function TabsLayout() {
 				}}
 			>
 				<Tabs.Screen
-					name="groups"
+					name="(stack)/groups"
 					options={{
 						tabBarLabel: "Groups",
 						tabBarIcon: ({ focused, color, size }) => {
@@ -88,7 +68,7 @@ export default function TabsLayout() {
 					}}
 				/>
 				<Tabs.Screen
-					name="home"
+					name="(stack)/home"
 					options={{
 						tabBarLabel: "Home",
 						tabBarIcon: ({ focused, color, size }) => {
@@ -105,7 +85,7 @@ export default function TabsLayout() {
 					}}
 				/>
 				<Tabs.Screen
-					name="ranking"
+					name="(stack)/ranking"
 					options={{
 						tabBarLabel: "Ranking",
 						tabBarIcon: ({ focused, size }) => {
@@ -182,15 +162,6 @@ export default function TabsLayout() {
 					// })}
 				/> */}
 			</Tabs>
-			<AddButton
-				onPress={() => {
-					addButtonShown.value = !addButtonShown.value;
-				}}
-				onLongPress={() => {
-					addButtonShown.value = !addButtonShown.value;
-				}}
-				items={pupupItems}
-			/>
 			{/* <Animated.View
 				style={[
 					{

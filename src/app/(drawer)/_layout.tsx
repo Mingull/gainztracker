@@ -6,7 +6,7 @@ import { User } from "lucide-react-native";
 import { StyledComponent } from "nativewind";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import WorkoutPage from "./(tabs)/home/[workout]";
+import WorkoutPage from "./(tabs)/(stack)/home/[workout]";
 import WorkoutsProvider from "@/lib/contexts/Workout.context";
 
 export default function Layout() {
