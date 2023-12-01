@@ -5,11 +5,12 @@ import { shadows } from "@/constants/shadows";
 import { useUser } from "@/lib/contexts/User.context";
 import cn from "@/lib/utils/ClassName";
 import { Tabs, router } from "expo-router";
-import { Dumbbell, Home, LucideIcon, TabletsIcon, Trophy, Users } from "lucide-react-native";
+import { Dumbbell, Group, Home, LucideIcon, TabletsIcon, Trophy, Users } from "lucide-react-native";
 import { StyledComponent } from "nativewind";
 import { Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, {
+	Extrapolate,
 	SharedValue,
 	interpolate,
 	interpolateColor,
@@ -61,6 +62,7 @@ export default function TabsLayout() {
 						...shadows.default,
 					},
 				}}
+				initialRouteName="home"
 				screenListeners={{
 					state: ({ data, type }) => {
 						if (type === "state")
@@ -69,13 +71,30 @@ export default function TabsLayout() {
 				}}
 			>
 				<Tabs.Screen
+					name="groups"
+					options={{
+						tabBarLabel: "Groups",
+						tabBarIcon: ({ focused, color, size }) => {
+							return (
+								<TabIcon
+									index={0}
+									focused={focused}
+									icon={Users}
+									label="Groups"
+									currentTabIndex={currentTabIndex}
+								/>
+							);
+						},
+					}}
+				/>
+				<Tabs.Screen
 					name="home"
 					options={{
 						tabBarLabel: "Home",
 						tabBarIcon: ({ focused, color, size }) => {
 							return (
 								<TabIcon
-									index={0}
+									index={1}
 									focused={focused}
 									icon={Home}
 									label="Home"
@@ -266,9 +285,12 @@ const Indicator = ({ currentTabIndex, index }: { index: number; currentTabIndex:
 
 	const animation = useAnimatedStyle(() => {
 		return {
-			opacity: withSpring(interpolate(currentTabIndex.value, [index - 1, index, index + 1], [0, 1, 0]), {
-				damping: 10,
-			}),
+			opacity: withSpring(
+				interpolate(currentTabIndex.value, [index - 1, index, index + 1], [0, 1, 0], Extrapolate.CLAMP),
+				{
+					damping: 10,
+				}
+			),
 
 			transform: [
 				{
@@ -278,7 +300,9 @@ const Indicator = ({ currentTabIndex, index }: { index: number; currentTabIndex:
 					translateY: 2.5,
 				},
 				{
-					scale: withSpring(interpolate(currentTabIndex.value, [index - 1, index, index + 1], [0, 1, 0])),
+					scale: withSpring(
+						interpolate(currentTabIndex.value, [index - 1, index, index + 1], [0, 1, 0], Extrapolate.CLAMP)
+					),
 				},
 			],
 		};
