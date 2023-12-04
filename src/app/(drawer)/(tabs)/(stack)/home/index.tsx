@@ -3,20 +3,19 @@ import { Skeleton } from "@/components/Skeleton";
 import { AddButton, PopupButton } from "@/components/addButton";
 import { shadows } from "@/constants/shadows";
 import { useUser } from "@/lib/contexts/User.context";
-import { useWorkouts } from "@/lib/contexts/Workout.context";
-import useWorkoutStore from "@/lib/stores/workouts";
+import { useWorkouts } from "@/lib/hooks/use-workouts";
 import formatDateTime from "@/lib/utils/formatDate";
 import { router } from "expo-router";
-import { ChevronRight, Dumbbell, Users } from "lucide-react-native";
+import { ChevronRight, Dumbbell } from "lucide-react-native";
 import { StyledComponent } from "nativewind";
 import React from "react"; // Import React
 import { FlatList, Pressable, View } from "react-native";
 
 export default function HomePage() {
-	const { workouts, loading } = useWorkouts();
-	const { workouts: workoutStore } = useWorkoutStore();
-	console.log({ workoutStore });
-	
+	const { data: workouts, isLoading, error } = useWorkouts();
+
+	console.log({ workouts, error });
+
 	const pupupItems: PopupButton[] = [
 		{
 			delay: 1,
@@ -34,7 +33,7 @@ export default function HomePage() {
 				className="relative h-full pt-10 pb-20 bg-white"
 				style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
 			>
-				{!loading ? (
+				{!isLoading ? (
 					<FlatList
 						data={workouts}
 						renderItem={({ index, item }) => {
@@ -61,7 +60,7 @@ export default function HomePage() {
 								</Pressable>
 							);
 						}}
-						// ListEmptyComponent={() => <Text>No workouts</Text>}
+						ListEmptyComponent={() => <Text>No workouts</Text>}
 						keyExtractor={(item) => item.id.toString()}
 					/>
 				) : (

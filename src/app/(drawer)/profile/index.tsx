@@ -3,7 +3,7 @@ import { Avatar, UpdateAvatar } from "@/components/Avatar";
 import modal from "@/components/Modalify";
 import { useUser } from "@/lib/contexts/User.context";
 import { supabase } from "@/lib/db/supabase";
-import { useUserSession } from "@/lib/hooks/user";
+import { useUserSession } from "@/lib/hooks/use-workouts";
 import { Session } from "@supabase/supabase-js";
 import React, { useEffect, useState } from "react";
 import { Image, View, StyleSheet } from "react-native";

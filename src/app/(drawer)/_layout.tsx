@@ -8,11 +8,14 @@ import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import WorkoutPage from "./(tabs)/(stack)/home/[workout]";
 import WorkoutsProvider from "@/lib/contexts/Workout.context";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export default function Layout() {
 	return (
-		<>
-			<UserProvider>
+		<UserProvider>
+			<QueryClientProvider client={queryClient}>
 				<WorkoutsProvider>
 					<Drawer screenOptions={{ headerShown: false }}>
 						<Drawer.Screen
@@ -41,7 +44,10 @@ export default function Layout() {
 											<StyledComponent
 												component={User}
 												strokeWidth={1.5}
-												className={cn({ "text-blue-500": focused, "text-zinc-900": !focused })}
+												className={cn({
+													"text-blue-500": focused,
+													"text-zinc-900": !focused,
+												})}
 											/>
 											<Text
 												className={cn("text-md mr-10", {
@@ -65,7 +71,7 @@ export default function Layout() {
 						/>
 					</Drawer>
 				</WorkoutsProvider>
-			</UserProvider>
-		</>
+			</QueryClientProvider>
+		</UserProvider>
 	);
 }
