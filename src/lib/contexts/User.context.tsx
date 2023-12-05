@@ -6,12 +6,11 @@ import { createSafeContext } from "../utils";
 import { Avatar } from "@/components/Avatar";
 import { AvatarProps } from "@/components/Avatar/Avatar";
 
-export interface UserCtx {
+export type UserCtx = {
 	loading: boolean;
-	user: UserInfo;
-
+	user: UserInfo | undefined | null;
 	update: (user: UserInfo) => {};
-}
+};
 
 export type UserInfo = {
 	id: string;

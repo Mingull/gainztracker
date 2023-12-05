@@ -14,9 +14,9 @@ export default function Skeleton({ width, height, circle, style, className }: Sk
 	const skeletonAnimation = useAnimatedStyle(() => ({
 		opacity: withRepeat(
 			withSequence(
-				withDelay(250, withTiming(1, { duration: 500 })),
+				withDelay(150, withTiming(1, { duration: 350 })),
 				withTiming(0.7),
-				withDelay(250, withTiming(1, { duration: 500 }))
+				withDelay(150, withTiming(1, { duration: 350 }))
 			),
 			-1
 		),

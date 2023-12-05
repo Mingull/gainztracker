@@ -2,19 +2,16 @@ import { Text } from "@/components";
 import { Skeleton } from "@/components/Skeleton";
 import { AddButton, PopupButton } from "@/components/addButton";
 import { shadows } from "@/constants/shadows";
-import { useUser } from "@/lib/contexts/User.context";
 import { useWorkouts } from "@/lib/hooks/use-workouts";
 import formatDateTime from "@/lib/utils/formatDate";
 import { router } from "expo-router";
 import { ChevronRight, Dumbbell } from "lucide-react-native";
 import { StyledComponent } from "nativewind";
 import React from "react"; // Import React
-import { FlatList, Pressable, View } from "react-native";
+import { FlatList, Pressable, RefreshControl, View } from "react-native";
 
 export default function HomePage() {
-	const { data: workouts, isLoading, error } = useWorkouts();
-
-	console.log({ workouts, error });
+	const { data: workouts, isLoading, error, status, isFetching, refetch } = useWorkouts();
 
 	const pupupItems: PopupButton[] = [
 		{
@@ -30,10 +27,10 @@ export default function HomePage() {
 	return (
 		<View className="h-full bg-zinc-900">
 			<View
-				className="relative h-full pt-10 pb-20 bg-white"
+				className="relative h-full pt-5 pb-0 bg-white"
 				style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
 			>
-				{!isLoading ? (
+				{!isLoading && !isFetching ? (
 					<FlatList
 						data={workouts}
 						renderItem={({ index, item }) => {
@@ -60,11 +57,14 @@ export default function HomePage() {
 								</Pressable>
 							);
 						}}
+						ListHeaderComponent={() => <Text className="ml-5 text-2xl font-bold">Your Workouts</Text>}
+						refreshControl={<RefreshControl onRefresh={refetch} refreshing={isFetching} />}
 						ListEmptyComponent={() => <Text>No workouts</Text>}
 						keyExtractor={(item) => item.id.toString()}
 					/>
 				) : (
 					<>
+						<Text className="ml-5 text-2xl font-bold">Your Workouts</Text>
 						<View
 							className="flex-row items-center justify-between p-4 mx-5 rounded-lg bg-zinc-100"
 							style={{

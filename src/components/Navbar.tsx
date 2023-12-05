@@ -22,8 +22,9 @@ import Animated, {
 } from "react-native-reanimated";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { SCREEN_WIDTH } from "@/constants/screen";
+import { UserInfo } from "@/lib/hooks/use-user";
 
-export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "user">) {
+export default function Navbar({ isLoading, user }: { isLoading: boolean; user: UserInfo | undefined }) {
 	const NAVBAR_HEIGHT = 50 + 16 + 16;
 	const NAVBAR_WIDTH = SCREEN_WIDTH - 40;
 	const nav = useNavigation<DrawerNavigationProp<ParamListBase>>();
@@ -162,7 +163,7 @@ export default function Navbar({ loading, user }: Pick<UserCtx, "loading" | "use
 			<Animated.View className="px-5 py-4" style={[swipeDownAnimation]}>
 				<StatusBar />
 				{/* <StyledComponent component={Menu} className="text-blue-500" /> */}
-				{!loading ? (
+				{!isLoading && user ? (
 					<Pressable onPress={() => nav.dispatch(DrawerActions.toggleDrawer)}>
 						<View className="flex-row">
 							<user.avatar.image

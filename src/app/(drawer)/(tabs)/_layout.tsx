@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import { AddButton, PopupButton } from "@/components/addButton";
 import { isSmallDevice } from "@/constants/screen";
 import { shadows } from "@/constants/shadows";
-import { useUser } from "@/lib/contexts/User.context";
+import { useUser } from "@/lib/hooks/use-user";
 import cn from "@/lib/utils/ClassName";
 import { Tabs, router } from "expo-router";
 import { Dumbbell, Group, Home, LucideIcon, TabletsIcon, Trophy, Users } from "lucide-react-native";
@@ -21,14 +21,14 @@ import Animated, {
 } from "react-native-reanimated";
 
 export default function TabsLayout() {
-	const { user, loading } = useUser();
+	const { data:user, isLoading } = useUser();
 	const currentTabIndex = useSharedValue(0);
 	const addButtonShown = useSharedValue(false);
 
 	return (
 		<>
 			<GestureHandlerRootView>
-				<Navbar user={user} loading={loading} />
+				<Navbar user={user} isLoading={isLoading} />
 			</GestureHandlerRootView>
 			<Tabs
 				screenOptions={{

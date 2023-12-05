@@ -37,7 +37,7 @@ export default function AddButton({ items, ...props }: PopupProps) {
 	}));
 
 	return (
-		<View style={{ position: "absolute", bottom: 40, right: 10 }}>
+		<View style={{ position: "absolute", bottom: 0, right: 10 }}>
 			<TouchableWithoutFeedback
 				{...props}
 				onPress={() => {
@@ -47,13 +47,13 @@ export default function AddButton({ items, ...props }: PopupProps) {
 				<View style={{ position: "relative" }}>
 					<Animated.View
 						style={[buttonAnimation]}
-						className="items-center justify-center w-16 h-16 mb-10 bg-blue-300 rounded-2xl"
+						className="items-center justify-center w-16 h-16 bg-blue-300 rounded-2xl"
 					>
 						<Animated.View style={[iconAnimation]}>
 							<StyledComponent component={Plus} strokeWidth={2.5} size={38} className={"text-zinc-50"} />
 						</Animated.View>
 					</Animated.View>
-					<Animated.View
+					{/* <Animated.View
 						style={[
 							{
 								rowGap: popupGap,
@@ -75,7 +75,7 @@ export default function AddButton({ items, ...props }: PopupProps) {
 								popupHeight={popupHeight}
 							/>
 						))}
-					</Animated.View>
+					</Animated.View> */}
 				</View>
 			</TouchableWithoutFeedback>
 		</View>
