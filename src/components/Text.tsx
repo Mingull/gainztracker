@@ -2,7 +2,7 @@ import { Text as RNText, TextProps as RNTextProps, StyleProp, TextStyle } from "
 import { cva, VariantProps } from "cva";
 import cn from "@/lib/utils/ClassName";
 import React, { useRef } from "react";
-import Animated from "react-native-reanimated";
+import Animated, { AnimateProps } from "react-native-reanimated";
 
 const textVariants = cva("", {
 	variants: {
@@ -41,7 +41,7 @@ const textVariants = cva("", {
 	},
 });
 
-export interface TextProps extends RNTextProps, VariantProps<typeof textVariants> {
+export interface TextProps extends Animated.AnimateProps<RNTextProps>, VariantProps<typeof textVariants> {
 	ref?: React.LegacyRef<Animated.Text> | undefined;
 }
 
