@@ -5,7 +5,7 @@ import { shadows } from "@/constants/shadows";
 import { useWorkouts } from "@/lib/hooks/use-workouts";
 import formatDateTime from "@/lib/utils/formatDate";
 import { Link, router } from "expo-router";
-import { ChevronRight, Dumbbell } from "lucide-react-native";
+import { ChevronLeft, ChevronRight, Dumbbell } from "lucide-react-native";
 import { StyledComponent } from "nativewind";
 import React from "react"; // Import React
 import { FlatList, Pressable, RefreshControl, View } from "react-native";
@@ -40,6 +40,7 @@ export default function HomePage() {
 								<Link asChild href={"/home/" + item.id}>
 									<Pressable>
 										<Animated.View
+											sharedTransitionTag={`workout-${item.id}-wrapper`}
 											className="flex flex-row items-center justify-between p-4 mx-5 rounded-lg bg-zinc-100"
 											style={{
 												marginBottom: 15,
@@ -117,3 +118,19 @@ export default function HomePage() {
 		</Animated.View>
 	);
 }
+
+// const RenderItemDetails = ({ item }: { item: any }) => {
+// 	return (
+// 		<View className="justify-center mx-5">
+// 			<View className="flex-row items-center">
+// 				<Pressable onPress={() => router.back()}>
+// 					<StyledComponent component={ChevronLeft} size={24} color="black" />
+// 				</Pressable>
+// 				<Text className="text-2xl font-semibold" sharedTransitionTag={`workout-${workoutId}-title`}>
+// 					{workout?.name}
+// 				</Text>
+// 			</View>
+// 			<Text>Poep</Text>
+// 		</View>
+// 	);
+// };

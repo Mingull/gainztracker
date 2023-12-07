@@ -15,23 +15,23 @@ export default function WorkoutPage() {
 	const workout = useWorkout(workoutId!);
 
 	return (
-		<Animated.View sharedTransitionTag="page-wrapper" className="h-full bg-zinc-900">
-			<View
-				className="relative h-full pt-5 pb-0 bg-white"
-				style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
+		<BlurView intensity={40} style={{ flex: 1, alignContent: "center", justifyContent: "center" }}>
+			<Animated.View
+				sharedTransitionTag={`workout-${workoutId}-wrapper`}
+				className="flex flex-row items-center justify-between p-4 mx-5 rounded-lg bg-zinc-100"
 			>
 				<View className="justify-center mx-5">
-					<View className="flex-row items-center">
+					{/* <View className="flex-row items-center">
 						<Pressable onPress={() => router.back()}>
 							<StyledComponent component={ChevronLeft} size={24} color="black" />
 						</Pressable>
 						<Text className="text-2xl font-semibold" sharedTransitionTag={`workout-${workoutId}-title`}>
 							{workout?.name}
 						</Text>
-					</View>
+					</View> */}
 					<Text>Poep</Text>
 				</View>
-			</View>
-		</Animated.View>
+			</Animated.View>
+		</BlurView>
 	);
 }
